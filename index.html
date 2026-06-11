@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Abu Rayhan Alif — Backend Engineer</title>
+<meta name="description" content="Abu Rayhan Alif — backend engineer, creator of pylogiclock and django-security-hunter (PyPI), open-source Django tooling from Bangladesh." />
+<meta property="og:title" content="Abu Rayhan Alif — Backend Engineer" />
+<meta property="og:description" content="Backend engineer · Creator of pylogiclock & django-security-hunter · Open-source Django tooling" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d0f13;
+    --surface: #15181f;
+    --surface-2: #1b1f28;
+    --border: #262b36;
+    --text: #eceef1;
+    --muted: #98a1b0;
+    --accent: #f0a93b;
+    --accent-soft: rgba(240, 169, 59, 0.12);
+    --mono: "JetBrains Mono", monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse 800px 500px at 15% -10%, rgba(240, 169, 59, 0.07), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 95% 5%, rgba(83, 74, 183, 0.06), transparent 60%),
+      radial-gradient(ellipse 900px 600px at 50% 110%, rgba(29, 158, 117, 0.05), transparent 60%),
+      radial-gradient(circle, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 26px 26px;
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: "JetBrains Mono", "Inter", monospace;
+    line-height: 1.7;
+  }
+  ::selection { background: var(--accent); color: #1a1304; }
+  .container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+  .progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--accent), #d85a30 55%, #534ab7);
+    z-index: 20;
+  }
+
+  nav.site-nav {
+    position: sticky; top: 0; z-index: 15;
+    background: rgba(13, 15, 19, 0.82); backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 880px; margin: 0 auto; padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--mono);
+  }
+  .nav-logo { color: var(--text); text-decoration: none; font-size: 14px; font-weight: 600; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 22px; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 13px;
+    transition: color .15s ease;
+  }
+  .nav-links a::before { content: "_"; color: var(--accent); }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+  @media (max-width: 640px) { .nav-links { gap: 14px; } .nav-links a:nth-child(n+4) { display: none; } }
+
+  .to-top {
+    position: fixed; bottom: 24px; right: 24px; z-index: 12;
+    font-family: var(--mono); font-size: 12.5px; color: var(--accent);
+    background: rgba(13, 15, 19, 0.9); border: 1px solid var(--accent);
+    border-radius: 10px; padding: 9px 14px; cursor: pointer;
+    opacity: 0; transform: translateY(16px); pointer-events: none;
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
+  .to-top:hover { background: var(--accent-soft); }
+
+  .fx { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .container { position: relative; z-index: 1; }
+
+  .scanlines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg,
+      rgba(255, 255, 255, 0.018) 0px, rgba(255, 255, 255, 0.018) 1px,
+      transparent 1px, transparent 4px);
+  }
+
+  .sym {
+    position: absolute; font-family: var(--mono); user-select: none;
+    bottom: -8%; animation: symRise linear infinite;
+  }
+  @keyframes symRise {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    8% { opacity: 1; }
+    92% { opacity: 1; }
+    100% { transform: translateY(-115vh) rotate(14deg); opacity: 0; }
+  }
+
+  .spotlight {
+    position: absolute; width: 520px; height: 520px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(240, 169, 59, 0.07), transparent 65%);
+    transform: translate(-50%, -50%); top: 18%; left: 55%;
+    transition: top .25s ease-out, left .25s ease-out;
+  }
+
+  .orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .5; }
+  .orb-1 {
+    width: 340px; height: 340px; background: rgba(240, 169, 59, 0.10);
+    top: -80px; left: -100px; animation: drift1 70s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 300px; height: 300px; background: rgba(83, 74, 183, 0.10);
+    top: 35%; right: -120px; animation: drift2 85s ease-in-out infinite;
+  }
+  .orb-3 {
+    width: 260px; height: 260px; background: rgba(29, 158, 117, 0.09);
+    bottom: -90px; left: 30%; animation: drift3 95s ease-in-out infinite;
+  }
+  @keyframes drift1 { 50% { transform: translate(140px, 90px) scale(1.15); } }
+  @keyframes drift2 { 50% { transform: translate(-160px, -70px) scale(0.9); } }
+  @keyframes drift3 { 50% { transform: translate(120px, -110px) scale(1.1); } }
+
+  header { padding: 64px 0 48px; display: flex; gap: 32px; align-items: center; flex-wrap: wrap; position: relative; }
+  header::before {
+    content: ""; position: absolute; top: 30px; left: -60px;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(240, 169, 59, 0.13), transparent 70%);
+    filter: blur(10px); pointer-events: none;
+  }
+  header > div, header .avatar { position: relative; z-index: 1; }
+  .avatar {
+    width: 108px; height: 108px; border-radius: 50%;
+    border: 2px solid rgba(240, 169, 59, 0.45); padding: 4px; flex-shrink: 0;
+    box-shadow: 0 0 36px rgba(240, 169, 59, 0.16);
+  }
+  .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+  .eyebrow {
+    color: var(--accent); font-family: var(--mono); font-size: 13px;
+    letter-spacing: 1.5px; margin-bottom: 10px;
+  }
+  h1 { font-size: 34px; font-weight: 700; line-height: 1.2; letter-spacing: -1px; }
+  h1::before { content: "{ "; color: var(--accent); font-weight: 400; }
+  h1::after { content: " }"; color: var(--accent); font-weight: 400; }
+  .tagline { color: var(--muted); font-size: 15.5px; margin-top: 12px; max-width: 560px; }
+  .tagline strong { color: var(--text); font-weight: 600; }
+
+  .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12.5px; color: #6ee7a0;
+    background: rgba(110, 231, 160, 0.08); border: 1px solid rgba(110, 231, 160, 0.25);
+    border-radius: 20px; padding: 5px 14px; margin-bottom: 14px;
+  }
+  .status .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #6ee7a0;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  .caret { display: inline-block; width: 8px; background: var(--accent); height: 13px; vertical-align: -2px; margin-left: 2px; animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .links a {
+    color: var(--text); text-decoration: none; font-size: 13.5px; font-weight: 500;
+    border: 1px solid var(--border); border-radius: 10px; padding: 9px 18px;
+    transition: all .18s ease;
+  }
+  .links a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+  .links a.primary { background: var(--accent); border-color: var(--accent); color: #1a1304; }
+  .links a.primary:hover { filter: brightness(1.08); color: #1a1304; }
+
+  .code-bg {
+    position: absolute; top: 8px; right: -30px; max-width: 460px;
+    font-family: var(--mono); font-size: 11.5px; line-height: 1.8;
+    color: rgba(240, 169, 59, 0.07); white-space: pre;
+    pointer-events: none; user-select: none; transform: rotate(-2deg);
+    z-index: 0;
+  }
+  @media (max-width: 700px) { .code-bg { display: none; } }
+
+  section { padding: 48px 0; border-top: 1px solid var(--border); }
+  h2 {
+    font-size: 19px; font-weight: 500; margin-bottom: 26px;
+    display: flex; align-items: center; gap: 12px; font-family: var(--mono);
+  }
+  h2 .method {
+    color: #6ee7a0; background: rgba(110, 231, 160, 0.08);
+    border: 1px solid rgba(110, 231, 160, 0.25); border-radius: 6px;
+    font-size: 12px; font-weight: 500; padding: 3px 10px; letter-spacing: 1px;
+  }
+  h2 .path { color: var(--text); }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  .term {
+    background: #0a0c10; border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; margin: 8px 0 0; font-family: var(--mono); font-size: 13.5px;
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface-2); padding: 10px 16px; border-bottom: 1px solid var(--border);
+  }
+  .term-bar i { width: 11px; height: 11px; border-radius: 50%; display: block; }
+  .term-bar i:nth-child(1) { background: #e24b4a; }
+  .term-bar i:nth-child(2) { background: #f0a93b; }
+  .term-bar i:nth-child(3) { background: #6ee7a0; }
+  .term-bar span { color: var(--muted); font-size: 11.5px; margin-left: 8px; }
+  .term-body { padding: 18px 20px; min-height: 150px; line-height: 2; }
+  .term-body .ln { display: block; white-space: pre-wrap; }
+  .term-body .p { color: #6ee7a0; }
+  .term-body .cmd { color: var(--text); }
+  .term-body .out { color: var(--muted); }
+  .term-body .ok { color: #6ee7a0; }
+  .term-body .accent { color: var(--accent); }
+  .term-caret {
+    display: inline-block; width: 8px; height: 14px; background: var(--accent);
+    vertical-align: -2px; animation: blink 1s step-end infinite;
+  }
+
+  .sudo-toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translate(-50%, 120px);
+    background: #0a0c10; border: 1px solid #6ee7a0; border-radius: 12px;
+    font-family: var(--mono); font-size: 13.5px; color: #6ee7a0;
+    padding: 14px 22px; z-index: 30; opacity: 0;
+    transition: transform .4s cubic-bezier(.2, .9, .3, 1.2), opacity .4s ease;
+    box-shadow: 0 0 30px rgba(110, 231, 160, 0.15); white-space: pre;
+  }
+  .sudo-toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+  .skills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .skill {
+    font-family: var(--mono); font-size: 13px; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 14px; transition: all .18s ease;
+  }
+  .skill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+  .card {
+    background: linear-gradient(160deg, var(--surface-2), var(--surface) 55%);
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px; transition: all .18s ease; position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent); opacity: 0; transition: opacity .18s ease;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .card:hover::before { opacity: 1; }
+  .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 7px; }
+  .card h3::before { content: "{ "; color: var(--accent); font-weight: 400; }
+  .card h3::after { content: " }"; color: var(--accent); font-weight: 400; }
+  .card h3 a { color: var(--text); text-decoration: none; }
+  .card h3 a:hover { color: var(--accent); }
+  .badge {
+    display: inline-block; font-family: var(--mono); font-size: 10.5px; font-weight: 500;
+    letter-spacing: .8px; color: var(--accent); background: var(--accent-soft);
+    border-radius: 20px; padding: 3px 12px; margin-bottom: 12px; text-transform: uppercase;
+  }
+  .card p { color: var(--muted); font-size: 13.5px; }
+  .stack { font-family: var(--mono); color: var(--accent); font-size: 12px; margin-top: 14px; }
+
+  .gh-stats { display: flex; flex-wrap: wrap; gap: 16px; }
+  .gh-stats img { max-width: 100%; border-radius: 14px; border: 1px solid var(--border); }
+
+  .edu {
+    display: flex; gap: 18px; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px 24px; max-width: 560px;
+  }
+  .edu .dot-col { padding-top: 6px; }
+  .edu .edot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); display: block; }
+  .edu h3 { font-size: 15px; font-weight: 600; }
+  .edu p { color: var(--muted); font-size: 13.5px; }
+
+  .about p { color: var(--muted); font-size: 14.5px; max-width: 680px; }
+  .about p + p { margin-top: 14px; }
+  .about strong { color: var(--text); }
+
+  .writing a {
+    display: block; color: var(--text); text-decoration: none; font-size: 15px; font-weight: 500;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px 24px; transition: all .18s ease;
+  }
+  .writing a:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .writing a span { display: block; color: var(--muted); font-size: 13px; font-weight: 400; margin-top: 5px; }
+  .writing a em { color: var(--accent); font-style: normal; font-family: var(--mono); font-size: 12.5px; }
+
+  footer { padding: 40px 0 60px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13.5px; text-align: center; }
+
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 26px; }
+    header { padding: 44px 0 36px; gap: 22px; }
+    .avatar { width: 84px; height: 84px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .status .dot, .caret, .term-caret { animation: none; }
+    .orb, .sym { animation: none; }
+    .spotlight { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#top"><span>~/</span>alif</a>
+    <div class="nav-links">
+      <a href="#stack">stack</a>
+      <a href="#projects">projects</a>
+      <a href="#writing">writing</a>
+      <a href="#about">about</a>
+      <a href="mailto:rayhan15-12069@diu.edu.bd">contact</a>
+    </div>
+  </div>
+</nav>
+
+<div class="fx" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="scanlines"></div>
+  <div id="syms"></div>
+  <div class="spotlight" id="spotlight"></div>
+</div>
+
+<div class="container" id="top">
+
+  <header>
+    <div class="code-bg" aria-hidden="true">@logic_lock(
+    "checkout_discount",
+    result="discount_applied",
+    conditions=[
+        "user.is_premium",
+        "cart.total >= 100",
+    ],
+)
+def calculate_discount(user, cart):
+    rules = registry.match(user, cart)
+    if rules.conflict():
+        raise RuleConflict(rules)
+    return rules.apply()</div>
+    <div class="avatar">
+      <img src="https://github.com/abu-rayhan-alif.png" alt="Abu Rayhan Alif" />
+    </div>
+    <div>
+      <span class="status"><span class="dot"></span> open to collaboration</span>
+      <p class="eyebrow">// <span id="type-target">Backend Engineer · Dhaka, Bangladesh</span><span class="caret"></span></p>
+      <h1>Abu Rayhan Alif</h1>
+      <p class="tagline">
+        <strong>Backend engineer</strong> · Creator of <strong>pylogiclock</strong> &amp;
+        <strong>django-security-hunter</strong> (PyPI) ·
+        I build production backend systems with Django — and ship them.
+      </p>
+      <div class="links">
+        <a class="primary" href="https://github.com/abu-rayhan-alif">GitHub</a>
+        <a href="https://www.linkedin.com/in/aburayhanalif/">LinkedIn</a>
+        <a href="https://dev.to/aburayhanalif">dev.to</a>
+        <a href="https://aburayhanalif.medium.com">Medium</a>
+        <a href="mailto:rayhan15-12069@diu.edu.bd">Email</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="term reveal" aria-label="Terminal introduction">
+    <div class="term-bar"><i></i><i></i><i></i><span>alif@dhaka — zsh</span></div>
+    <div class="term-body" id="term-body"><span class="term-caret"></span></div>
+  </div>
+
+  <section id="stack">
+    <h2><span class="method">GET</span> <span class="path">/tech-stack</span></h2>
+    <div class="skills">
+      <span class="skill">Python</span>
+      <span class="skill">Django</span>
+      <span class="skill">Django REST Framework</span>
+      <span class="skill">PostgreSQL</span>
+      <span class="skill">Redis</span>
+      <span class="skill">Celery</span>
+      <span class="skill">WebSocket / Channels</span>
+      <span class="skill">JWT / Auth Systems</span>
+      <span class="skill">Docker</span>
+      <span class="skill">GitHub Actions · CI/CD</span>
+      <span class="skill">System Design</span>
+      <span class="skill">DSA</span>
+      <span class="skill">Static Analysis</span>
+      <span class="skill">Pandas</span>
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2><span class="method">GET</span> <span class="path">/projects</span></h2>
+    <div class="grid">
+
+      <div class="card">
+        <span class="badge">PyPI · GitHub Action</span>
+        <h3><a href="https://github.com/abu-rayhan-alif/pylogiclock">pylogiclock</a></h3>
+        <p>Published package that scans Python projects for logic-rule drift and conflicts — CLI + library with SARIF output, Mermaid flow graphs and a Marketplace Action.</p>
+        <p class="stack">Python · AST · Static Analysis · CI</p>
+        <p style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <img src="https://img.shields.io/pypi/v/pylogiclock?style=flat-square&label=pypi&color=f0a93b&labelColor=262b36" alt="PyPI version" style="height: 20px;" />
+          <img src="https://img.shields.io/pypi/dm/pylogiclock?style=flat-square&label=downloads&color=6ee7a0&labelColor=262b36" alt="PyPI downloads" style="height: 20px;" />
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="badge">PyPI · Security</span>
+        <h3><a href="https://github.com/abu-rayhan-alif/djangoSecurityHunter">django-security-hunter</a></h3>
+        <p>Security &amp; performance inspector for Django/DRF — static analysis, config checks, N+1 query detection and SARIF for GitHub Code Scanning.</p>
+        <p class="stack">Python · Security · Static Analysis</p>
+        <p style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <img src="https://img.shields.io/pypi/v/django-security-hunter?style=flat-square&label=pypi&color=f0a93b&labelColor=262b36" alt="PyPI version" style="height: 20px;" />
+          <img src="https://img.shields.io/pypi/dm/django-security-hunter?style=flat-square&label=downloads&color=6ee7a0&labelColor=262b36" alt="PyPI downloads" style="height: 20px;" />
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="badge">Open Source</span>
+        <h3><a href="https://github.com/abu-rayhan-alif/django-saas-kit">django-saas-kit</a></h3>
+        <p>Production-ready SaaS boilerplate — clean architecture with service layer, tenant-aware RBAC, JWT auth, Celery and structured observability.</p>
+        <p class="stack">Django · DRF · PostgreSQL · Docker</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="method">GET</span> <span class="path">/github-activity</span></h2>
+    <div class="gh-stats">
+      <img src="https://github-readme-stats.vercel.app/api?username=abu-rayhan-alif&show_icons=true&hide_border=true&bg_color=15181f&title_color=f0a93b&icon_color=f0a93b&text_color=98a1b0&ring_color=f0a93b" alt="GitHub stats" />
+      <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=abu-rayhan-alif&layout=compact&hide_border=true&bg_color=15181f&title_color=f0a93b&text_color=98a1b0" alt="Top languages" />
+    </div>
+  </section>
+
+  <section id="education">
+    <h2><span class="method">GET</span> <span class="path">/education</span></h2>
+    <div class="edu">
+      <div class="dot-col"><span class="edot"></span></div>
+      <div>
+        <h3>B.Sc. in Computer Science &amp; Engineering</h3>
+        <p>Daffodil International University, Dhaka</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <h2><span class="method">GET</span> <span class="path">/about</span></h2>
+    <p>
+      I'm a CSE graduate from <strong>Daffodil International University</strong> who learns by building.
+      My transcript shows where I started — my GitHub shows where I am.
+    </p>
+    <p>
+      I've published <strong>open-source tooling on PyPI and the GitHub Marketplace</strong> —
+      because the best way to understand production engineering is to ship it.
+    </p>
+  </section>
+
+  <section class="writing" id="writing">
+    <h2><span class="method">GET</span> <span class="path">/writing</span></h2>
+    <div style="display: grid; gap: 14px;">
+      <a href="https://dev.to/aburayhanalif/stop-wiring-django-saas-infrastructure-from-scratch-i-built-a-production-ready-starter-kit-1d0h">
+        Stop Wiring Django SaaS Infrastructure from Scratch — Meet Django SaaS Kit
+        <span><em>dev.to · May 2026</em> — A production-ready starter kit with multi-tenant RBAC, JWT and Celery</span>
+      </a>
+      <a href="https://dev.to/aburayhanalif/automating-django-security-audits-with-sarif-support-meet-django-security-hunter-1018">
+        Automating Django Security Audits with SARIF Support — Meet Django-Security-Hunter
+        <span><em>dev.to · Apr 2026</em> — Static analysis, config checks and N+1 detection for Django/DRF</span>
+      </a>
+      <a href="https://aburayhanalif.medium.com/introduction-0390df4ca094">
+        Stop Shipping Insecure Django Apps: Meet Django-Security-Hunter
+        <span><em>Medium · 2026</em> — Why I built a security inspector for Django &amp; DRF</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p style="font-family: var(--mono); font-size: 12.5px; margin-bottom: 8px;">
+      <span style="color: #6ee7a0;">HTTP/1.1 200 OK</span> · served from Dhaka 🇧🇩
+    </p>
+    <p>© 2026 Abu Rayhan Alif</p>
+  </footer>
+
+</div>
+
+<button class="to-top" id="toTop" aria-label="Back to top">$ cd ~</button>
+
+<script data-goatcounter="https://aburayhanalif.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+<script>
+  document.querySelectorAll('section').forEach(function (s) {
+    s.classList.add('reveal');
+  });
+  document.querySelectorAll('.card, .skill').forEach(function (el, idx) {
+    el.classList.add('reveal');
+    el.style.transitionDelay = (el.classList.contains('skill') ? (idx % 13) * 35 : (idx % 3) * 110) + 'ms';
+  });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  var progress = document.getElementById('progress');
+  var toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', function () {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    progress.style.width = pct + '%';
+    if (h.scrollTop > 600) { toTop.classList.add('show'); }
+    else { toTop.classList.remove('show'); }
+  }, { passive: true });
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  var navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  var secIo = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        navLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  ['stack', 'projects', 'writing', 'about'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) secIo.observe(el);
+  });
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var symbols = ['{', '}', '=>', ';', '$', '#', '</>', '()', '[]', '&&', '::', '|>'];
+    var colors = ['rgba(240,169,59,0.07)', 'rgba(110,231,160,0.06)', 'rgba(152,161,176,0.06)'];
+    var symWrap = document.getElementById('syms');
+    for (var s = 0; s < 14; s++) {
+      var sp = document.createElement('span');
+      sp.className = 'sym';
+      sp.textContent = symbols[s % symbols.length];
+      sp.style.left = (Math.random() * 96) + '%';
+      sp.style.fontSize = (14 + Math.random() * 22) + 'px';
+      sp.style.color = colors[s % colors.length];
+      var dur = 45 + Math.random() * 55;
+      sp.style.animationDuration = dur + 's';
+      sp.style.animationDelay = (-Math.random() * dur) + 's';
+      symWrap.appendChild(sp);
+    }
+  }
+
+  var sudoBuf = '';
+  document.addEventListener('keydown', function (e) {
+    if (e.key.length !== 1) return;
+    sudoBuf = (sudoBuf + e.key.toLowerCase()).slice(-4);
+    if (sudoBuf === 'sudo') {
+      sudoBuf = '';
+      var t = document.createElement('div');
+      t.className = 'sudo-toast';
+      t.textContent = '[sudo] password accepted — root access granted. hire him. 😎';
+      document.body.appendChild(t);
+      requestAnimationFrame(function () { t.classList.add('show'); });
+      setTimeout(function () {
+        t.classList.remove('show');
+        setTimeout(function () { t.remove(); }, 500);
+      }, 4500);
+    }
+  });
+
+  var spot = document.getElementById('spotlight');
+  if (spot && window.matchMedia('(pointer: fine)').matches) {
+    document.addEventListener('mousemove', function (e) {
+      spot.style.left = e.clientX + 'px';
+      spot.style.top = e.clientY + 'px';
+    });
+  }
+
+  var target = document.getElementById('type-target');
+  var full = target.textContent;
+  target.textContent = '';
+  var ti = 0;
+  (function type() {
+    if (ti <= full.length) {
+      target.textContent = full.slice(0, ti);
+      ti++;
+      setTimeout(type, 38);
+    }
+  })();
+
+  var termLines = [
+    { html: '<span class="p">$</span> <span class="cmd">whoami</span>', type: true },
+    { html: '<span class="out">abu-rayhan-alif — <span class="accent">backend engineer</span>, dhaka</span>' },
+    { html: '<span class="p">$</span> <span class="cmd">pip install pylogiclock django-security-hunter</span>', type: true },
+    { html: '<span class="out">Successfully installed pylogiclock django-security-hunter <span class="ok">✓</span></span>' },
+    { html: '<span class="p">$</span> <span class="cmd">curl -s api.alif.dev/status</span>', type: true },
+    { html: '<span class="out">{ "status": <span class="ok">"shipping"</span>, "stack": "django", "uptime": "since 2023" }</span>' }
+  ];
+  var termBody = document.getElementById('term-body');
+  var termCaret = termBody.querySelector('.term-caret');
+  var li = 0;
+  function nextLine() {
+    if (li >= termLines.length) return;
+    var line = termLines[li];
+    var el = document.createElement('span');
+    el.className = 'ln';
+    termBody.insertBefore(el, termCaret);
+    li++;
+    if (line.type) {
+      var tmp = document.createElement('div');
+      tmp.innerHTML = line.html;
+      var plain = tmp.textContent;
+      var ci = 0;
+      (function typeCmd() {
+        if (ci <= plain.length) {
+          el.textContent = plain.slice(0, ci);
+          ci++;
+          setTimeout(typeCmd, 34);
+        } else {
+          el.innerHTML = line.html;
+          setTimeout(nextLine, 220);
+        }
+      })();
+    } else {
+      el.innerHTML = line.html;
+      setTimeout(nextLine, 420);
+    }
+  }
+  var termIo = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) { setTimeout(nextLine, 500); termIo.disconnect(); }
+  }, { threshold: 0.3 });
+  termIo.observe(termBody);
+</script>
+
+</body>
+</html>
